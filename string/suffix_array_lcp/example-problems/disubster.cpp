@@ -1,6 +1,8 @@
 /*
     Burak Bugrul
-    Suffix Array O(n lg^2 n)
+    Suffix Array O(N lg^2 N)
+    LCP Array O(N)
+    Problem link: https://www.spoj.com/problems/DISUBSTR/
 */
 
 #include <algorithm>
@@ -10,11 +12,13 @@
 
 using namespace std;
 
-const int MAXN = 1e6;   // Maximum string length
+const int MAXN = 100100;  // Maximum string length
 
+int T;
 int N;                  // Length of initial string
 int currentLength;      // Current length for comparisons
 
+int lcp[MAXN];          // Longest Common Prefixes array
 int sum[MAXN];          // Helper prefix sum array for finding new positions
 int position[MAXN];     // Current position of suffixes
 int suffixArray[MAXN];  // Current suffix array
@@ -39,7 +43,7 @@ inline void buildSuffixArray(){
 
     for( int i=0 ; i<N ; i++ ){
         suffixArray[i] = i;     // suffix started at ith position
-        position[i] = ar[i];    // ith position has character ar[i] now
+        position[i] = ar[i];    // will be used in comparisons
     }
 
     while( sum[N-1] != N-1 ){
@@ -56,25 +60,55 @@ inline void buildSuffixArray(){
     }
 }
 
+// Kasai's Algorithm
+inline void buildLCPArray(){
+
+    int current = 0;    // Denotes number of current mathing characters in two consecutive suffixes
+
+    for( int i=0 ; i<N ; i++ )
+        if( position[i] != N-1 ){
+
+            int j = suffixArray[position[i] + 1];
+
+            while( ar[i + current] == ar[j + current] )
+                current++;
+            
+            lcp[position[i]] = current;
+
+            if( current )
+                current--;
+        }
+}
+
 int main(){
 
-    scanf("%s", ar);
+    scanf("%d", &T);
 
-    buildSuffixArray();
+    while(T--){
 
-    for( int i=0 ; i<N ; i++ ) // Printing suffix order
-        cout << suffixArray[i] << " ";
-    
-    cout << endl;
-
-    for( int i=0 ; i<N ; i++ ){ // Printing suffixes
-
-        cout << suffixArray[i] << " ";
-
-        for( int j=suffixArray[i] ; j<N ; j++ )
-            cout << ar[j];
+        scanf("%s", ar);
         
-        cout << endl;
+        buildSuffixArray();
+        
+        if( N == 1 ){
+            puts("1");
+            continue;
+        }
+
+        buildLCPArray();
+
+        long long int result = (long long int)N*(N-1LL)/2LL + N;
+        
+        for( int i=0 ; i<N ; i++ )
+            result -= lcp[i];
+        
+        printf("%lld\n", result);
+
+        memset(ar, 0, sizeof ar);
+        memset(lcp, 0, sizeof ar);
+        memset(sum, 0, sizeof sum);
+        memset(position, 0, sizeof sum);
+        memset(suffixArray, 0, sizeof sum);
     }
 
     return 0;
