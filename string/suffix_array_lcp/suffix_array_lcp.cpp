@@ -1,6 +1,6 @@
 /*
     Burak Bugrul
-    Suffix Array O(N lg^2 N)
+    Suffix Array O(N * lg^2(N))
     LCP Array O(N)
 */
 
