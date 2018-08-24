@@ -18,16 +18,18 @@ char s[MAXN];   // Initial string
 
 inline void z_function( char *s, int N ){
 
-    int l = 0, r = 0;                                   // left and right boundaries of current prefix match
+    int l = 0, r = 0;                                   // Left and right boundaries of current prefix match
 
     for (int i = 1; i < N; i++){
 
         z[i] = max(0, min(z[i - l], r - i + 1));        // We can use previously calculated values for new z[i] value, but we can not go beyond right boundary without checking values
 
-        while (i + z[i] < N && s[i + z[i]] == s[z[i]]){ // Checking values beyond right boundary in a simple way
-            l = i;                                      // New boundary starting point
-            r = i + z[i];                               // New boundary ending point
-            z[i]++;                                     // Checked a new value for z[i]
+        while (i + z[i] < N && s[i + z[i]] == s[z[i]])  // Checking values beyond right boundary in a simple way
+            z[i]++;
+        
+        if( i + z[i] - 1 > r ){                         // Setting new boundaries
+            l = i;
+            r = i + z[i] - 1;
         }
     }
 }
