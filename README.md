@@ -1,2 +1,2 @@
-# Competitive-Programming
-Some useful algorithms, data structures and code snippets for competitive programming.
+# Algorithms-and-Data-Structures
+Some useful algorithms, data structures.
